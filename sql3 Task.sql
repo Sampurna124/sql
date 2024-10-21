@@ -16,3 +16,14 @@
 --  SELECT *
 -- FROM employee_details
 -- WHERE FirstName LIKE 'A%';
+
+-- Task 9: Rename Table and Columns
+-- 1. Change the name of the table and specific column names in the existing database
+-- structure to enhance clarity.
+-- Instructions:
+-- 1. Rename the table from Employee_Details to employee_database.
+-- 2. Rename the columns as follows:
+-- o Change FirstName to Name.
+-- o Change LastName to Surname.
+
+--select firstname as NAME,lastname AS SURNAME from employee_details 
