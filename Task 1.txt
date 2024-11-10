@@ -1,0 +1,337 @@
+Task 1:
+Retrieve the customer_name, city, and order_date for each customer who
+placed an order in 2023 by joining the customers and orders tables
+
+
+:SELECT c.customer_name, c.city, o.order_date
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+WHERE o.order_date BETWEEN '2023-01-01' AND '2023-12-31';
+
+
+2-Get a list of all products (with product_name, category, and total_price)
+ordered by customers living in Mumbai, by joining the customers, orders,
+order_items, and products tables.
+
+SELECT p.product_name, p.category, 
+       oi.quantity * oi.unit_price AS total_price
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+JOIN order_items oi ON o.order_id = oi.order_id
+JOIN products p ON oi.product_id = p.product_id
+WHERE c.city = 'Mumbai';
+
+
+3-Find all orders where customers paid using 'Credit Card' and display the
+customer_name, order_date, and total_price by joining the customers,
+orders, and order_items tables. -doubt
+
+SELECT
+    c.customer_name,
+    o.order_date,
+    SUM(oi.quantity * oi.price) AS total_price
+FROM
+    customers c
+JOIN
+    orders o ON c.customer_id = o.customer_id
+JOIN
+    order_items oi ON o.order_id = oi.order_id
+WHERE
+    o.payment_method = 'Credit Card'
+GROUP BY
+    c.customer_name, o.order_date
+ORDER BY
+    o.order_date;
+
+
+4-Display the product_name, category, and the total_price for all products
+ordered in the first half of 2023 (January - June) by joining the orders,
+order_items, and products tables.
+
+SELECT 
+  p.product_name,
+  p.category,
+  SUM(oi.quantity * oi.unit_price) AS total_price
+FROM 
+  orders o
+  JOIN order_items oi ON o.order_id = oi.order_id
+  JOIN products p ON oi.product_id = p.product_id
+WHERE 
+  o.order_date BETWEEN '2023-01-01' AND '2023-06-30'
+GROUP BY 
+  p.product_name, p.category
+ORDER BY 
+  total_price DESC;
+5-
+
+Show the total number of products ordered by each customer, displaying
+customer_name and total products ordered, using joins between
+customers, orders, and order_items.
+
+
+:::SELECT 
+    c.customer_name,
+    SUM(oi.quantity) AS total_products_ordered
+FROM 
+    customers c
+JOIN 
+    orders o ON c.customer_id = o.customer_id
+JOIN 
+    order_items oi ON o.order_id = oi.order_id
+GROUP BY 
+    c.customer_name
+ORDER BY 
+    total_products_ordered DESC;
+ 
+
+DISTNICT
+
+2. DISTINCT
+Task 1:
+Get a distinct list of cities where customers are located.
+Task 2:
+Retrieve distinct supplier_name from the products table.
+Task 3:
+Find distinct payment methods used in the orders table.
+Task 4:
+List all distinct product categories that have been ordered.
+Task 5:
+Find distinct cities from which suppliers supply products by querying the
+products table.
+
+
+1)SELECT DISTINCT city
+FROM customers;
+
+2)SELECT DISTINCT supplier_name
+FROM products;
+3)SELECT DISTINCT payment_method
+FROM orders;
+4)SELECT DISTINCT p.category
+FROM order_items oi
+JOIN products p ON oi.product_id = p.product_id;
+5)SELECT DISTINCT supplier_city
+FROM products;
+
+3. ORDER BY
+Task 1:
+List all customers sorted by customer_name in ascending order.
+Task 2:
+Display all orders sorted by total_price in descending order.
+Task 3:
+Retrieve a list of products sorted by price in ascending order and then by
+category in descending order.
+Task 4:
+Sort all orders by order_date in descending order and display the order_id,
+customer_id, and order_date.
+Task 5:
+Get the list of cities where orders were placed, sorted in alphabetical order,
+and display the total number of orders
+1)
+SELECT customer_id, customer_name
+FROM customers
+ORDER BY customer_name ASC;
+2)
+SELECT order_id, customer_id, total_price
+FROM orders
+ORDER BY total_price DESC;
+3)SELECT product_id, product_name, price, category
+FROM products
+ORDER BY price ASC, category DESC;
+4)SELECT order_id, customer_id, order_date
+FROM orders
+ORDER BY order_date DESC;
+5)SELECT o.city, COUNT(*) AS total_orders
+FROM orders o
+GROUP BY o.city
+ORDER BY o.city ASC;
+4. LIMIT & OFFSET
+Task 1:
+Retrieve the first 10 rows from the customers table ordered by
+customer_name.
+Task 2:
+Display the top 5 most expensive products (sorted by price in descending
+order).
+Task 3:
+Get the orders for the 11th to 20th customers (using OFFSET and LIMIT),
+sorted by customer_id.
+Task 4:
+List the first 5 orders placed in 2023, displaying order_id, order_date, and
+customer_id.
+Task 5:
+Fetch the next 10 distinct cities where orders were placed, using LIMIT and
+OFFSET.
+1)SELECT customer_id, customer_name
+FROM customers
+ORDER BY customer_name
+LIMIT 10;
+2)SELECT product_id, product_name, price
+FROM products
+ORDER BY price DESC
+LIMIT 5;
+3)SELECT order_id, customer_id, order_date
+FROM orders
+ORDER BY customer_id
+LIMIT 10 OFFSET 10;
+4)SELECT order_id, order_date, customer_id
+FROM orders
+WHERE YEAR(order_date) = 2023
+ORDER BY order_date
+LIMIT 5;
+5)SELECT DISTINCT city
+FROM orders
+ORDER BY city
+LIMIT 10 OFFSET 10;
+5. AGGREGATE FUNCTIONS
+Task 1:
+Calculate the total number of orders placed by all customers.
+Task 2:
+Find the total revenue generated from orders paid via 'UPI' from the orders
+table.
+Task 3:
+Get the average price of all products in the products table.
+Task 4:
+Find the maximum and minimum total price of orders placed in 2023.
+Task 5:
+Calculate the total quantity of products ordered for each product_id using
+the order_items table.
+1)SELECT COUNT(*) AS total_orders
+FROM orders;
+2)SELECT SUM(total_price) AS total_revenue
+FROM orders
+WHERE payment_method = 'UPI';
+3)SELECT AVG(price) AS average_price
+FROM products;
+4)
+SELECT 
+    MAX(total_price) AS max_total_price,
+    MIN(total_price) AS min_total_price
+FROM orders
+WHERE YEAR(order_date) = 2023;
+5)SELECT product_id, SUM(quantity) AS total_quantity
+FROM order_items
+GROUP BY product_id;
+
+6. SET OPERATIONS
+Task 1:
+Get the list of customers who have placed orders in both 2022 and 2023
+(use INTERSECT).
+Task 2:
+Find the products that were ordered in 2022 but not in 2023 (use EXCEPT).
+Task 3:
+Display the list of supplier_city from the products table that do not match
+any customer_city in the customers table (use EXCEPT).
+Task 4:
+Show a combined list of supplier_city from products and city from
+customers (use UNION).
+Task 5:
+Find the list of product_name from the products table that were ordered in
+2023 (use INTERSECT with the orders and order_items tables).
+
+1)SELECT DISTINCT o.customer_id
+FROM orders o
+WHERE YEAR(o.order_date) = 2022
+
+INTERSECT
+
+SELECT DISTINCT o.customer_id
+FROM orders o
+WHERE YEAR(o.order_date) = 2023;
+2)SELECT DISTINCT oi.product_id
+FROM order_items oi
+JOIN orders o ON oi.order_id = o.order_id
+WHERE YEAR(o.order_date) = 2022
+
+EXCEPT
+
+SELECT DISTINCT oi.product_id
+FROM order_items oi
+JOIN orders o ON oi.order_id = o.order_id
+WHERE YEAR(o.order_date) = 2023;
+3)SELECT DISTINCT supplier_city
+FROM products
+
+EXCEPT
+
+SELECT DISTINCT city
+FROM customers;
+4)SELECT DISTINCT supplier_city
+FROM products
+
+UNION
+
+SELECT DISTINCT city
+FROM customers;
+
+5)SELECT DISTINCT p.product_name
+FROM products p
+JOIN order_items oi ON p.product_id = oi.product_id
+JOIN orders o ON oi.order_id = o.order_id
+WHERE YEAR(o.order_date) = 2023
+
+INTERSECT
+
+SELECT DISTINCT p.product_name
+FROM products p
+JOIN order_items oi ON p.product_id = oi.product_id
+JOIN orders o ON oi.order_id = o.order_id
+WHERE YEAR(o.order_date) = 2023; // DOUBT
+
+7. SUBQUERIES
+Task 1:
+Find the names of customers who placed orders with a total price greater
+than the average total price of all orders.
+Task 2:
+Get a list of products that have been ordered more than once by any
+customer.
+Task 3:
+Retrieve the product names that were ordered by customers from Pune
+using a subquery.
+Task 4:
+Find the top 3 most expensive orders using a subquery.
+Task 5:
+Get the customer names who placed orders for a product that costs more
+than ₹30,000 using a subquery.
+
+1)SELECT c.customer_name
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+WHERE o.total_price > (
+    SELECT AVG(total_price)
+    FROM orders
+);
+2)SELECT product_id
+FROM order_items
+GROUP BY product_id
+HAVING COUNT(*) > 1;
+3)SELECT product_name
+FROM products
+WHERE product_id IN (
+    SELECT oi.product_id
+    FROM order_items oi
+    JOIN orders o ON oi.order_id = o.order_id
+    JOIN customers c ON o.customer_id = c.customer_id
+    WHERE c.city = 'Pune'
+);
+4)SELECT order_id, total_price
+FROM orders
+WHERE total_price IN (
+    SELECT DISTINCT total_price
+    FROM orders
+    ORDER BY total_price DESC
+    LIMIT 3
+)
+ORDER BY total_price DESC;
+5)SELECT customer_name
+FROM customers c
+WHERE c.customer_id IN (
+    SELECT o.customer_id
+    FROM orders o
+    JOIN order_items oi ON o.order_id = oi.order_id
+    JOIN products p ON oi.product_id = p.product_id
+    WHERE p.price > 30000
+);
+
+
+
+
