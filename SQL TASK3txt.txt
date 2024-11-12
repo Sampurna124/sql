@@ -1,0 +1,104 @@
+SQL Scenario-Based Questions
+
+1. Scenario: Filtering Data
+o You have a table called Employees with columns EmployeeID, FirstName,
+LastName, Department, and Salary. Write an SQL query to find all
+employees who work in the 'IT' department and have a salary greater than
+50,000.
+--SOLUTION--SELECT EmployeeID, FirstName, LastName, Department, Salary
+FROM Employees
+WHERE Department = 'IT' AND Salary > 50000;
+
+
+2. Scenario: Joining Tables
+o There are two tables, Orders and Customers. Orders has columns OrderID,
+CustomerID, OrderDate, and TotalAmount. Customers has columns
+CustomerID, CustomerName, and ContactNumber. Write a query to list all
+orders along with the customer name and contact number.
+SOLUTION--SELECT Orders.OrderID, Orders.CustomerID, Orders.OrderDate, Orders.TotalAmount,
+       Customers.CustomerName, Customers.ContactNumber
+FROM Orders
+JOIN Customers ON Orders.CustomerID = Customers.CustomerID;
+
+
+3. Scenario: Aggregate Functions
+o Given a table Sales with columns SaleID, ProductID, QuantitySold, and
+SaleDate, write a query to find the total quantity sold for each product.
+SOLUTION::SELECT ProductID, SUM(QuantitySold) AS TotalQuantitySold
+FROM Sales
+GROUP BY ProductID;
+
+
+4. Scenario: Grouping Data
+o Using the same Sales table, write a query to find the average quantity sold per
+month.
+SOLUTION:SELECT EXTRACT(YEAR FROM SaleDate) AS SaleYear,
+       EXTRACT(MONTH FROM SaleDate) AS SaleMonth,
+       AVG(QuantitySold) AS AverageQuantitySold
+FROM Sales
+GROUP BY EXTRACT(YEAR FROM SaleDate), EXTRACT(MONTH FROM SaleDate);
+
+
+5. Scenario: String Functions
+o You have a Products table with columns ProductID, ProductName, and
+Category. Write a query to return the product names in uppercase.
+SOLUTION::SELECT UPPER(ProductName) AS UppercaseProductName
+FROM Products;
+
+
+6. Scenario: Date Functions
+o There is a table Events with columns EventID, EventName, EventDate. Write
+a query to find all events happening in the next 30 days.
+SOLUTION::SELECT EventID, EventName, EventDate
+FROM Events
+WHERE EventDate BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL 30 DAY;
+
+
+7. Scenario: Subqueries
+o You have an Employees table with columns EmployeeID, FirstName,
+LastName, ManagerID, and Salary. Write a query to find all employees who
+earn more than the average salary in the company.
+SOLUTION::SELECT EmployeeID, FirstName, LastName, Salary
+FROM Employees
+WHERE Salary > (SELECT AVG(Salary) FROM Employees);
+
+
+8. Scenario: Using Triggers
+o Create a trigger that automatically updates the LastModified column in the
+Products table whenever a record is updated.
+SOLUTION::CREATE TRIGGER UpdateLastModified
+BEFORE UPDATE ON Products
+FOR EACH ROW
+BEGIN
+    SET NEW.LastModified = NOW();
+END;
+
+
+9. Scenario: Using Views
+o Create a view ActiveCustomers that shows all customers from the
+Customers table who have made a purchase in the last year.
+SOLUTION ::CREATE VIEW ActiveCustomers AS
+SELECT DISTINCT Customers.CustomerID, Customers.CustomerName, Customers.ContactNumber
+FROM Customers
+JOIN Orders ON Customers.CustomerID = Orders.CustomerID
+WHERE Orders.OrderDate >= CURRENT_DATE - INTERVAL 1 YEAR;
+
+10. Scenario: Handling NULL Values
+You have a Sales table where some rows have NULL values in the
+TotalAmount column. Write a query to count how many sales have NULL as
+the total amount.
+SOLUTION :SELECT COUNT(*) AS NullSalesCount
+FROM Sales
+WHERE TotalAmount IS NULL;
+
+
+11. Scenario: Ranking Data
+ You have a Participants table with columns ParticipantID,
+ParticipantName, Score. Write a query to rank participants based on their
+scores.
+SOLUTIONSELECT ParticipantID, ParticipantName, Score,
+       RANK() OVER (ORDER BY Score DESC) AS Rank
+FROM Participants;
+
+
+12. Scenario: Window Functions
